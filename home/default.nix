@@ -25,6 +25,19 @@
       source <(op completion zsh)
     '';
     syntaxHighlighting.enable = true;
+    syntaxHighlighting.styles = {
+      "comment" = "fg=cyan,bold";
+      "command" = "fg=#2ecc71,bold";
+      "hashed-command" = "fg=#2ecc71,bold";
+      "alias" = "fg=#2ecc71,bold";
+      "built-in" = "fg=#2ecc71,bold";
+      "unknown-token" = "fg=#f44336,bold";
+      "path" = "underline";
+      "single-quoted-argument" = "fg=yellow";
+      "double-quoted-argument" = "fg=yellow";
+      "single-hyphen-option" = "fg=cyan";
+      "double-hyphen-option" = "fg=cyan";
+    };
     shellAliases = {
       ip = "ip -br -c";
       sl = "ls";
@@ -33,6 +46,8 @@
       cleanup = "sudo nix-collect-garbage --delete-older-than 1d";
       listgen = "sudo nix-env -p /nix/var/nix/profiles/system --list-generations";
       nixformat = "nixformat () {  find . -type f -name '*.nix' -print -exec nixfmt \${@:-} -v {} ; ;}; nixformat";
+      yubisshagent = "eval $(ssh-agent -P $(realpath /run/current-system/sw/lib/pkcs11/opensc-pkcs11.so)) && \
+          ssh-add -s $(realpath  /run/current-system/sw/lib/pkcs11/opensc-pkcs11.so)";
     };
     #setOptions = [ "HIST_STAMPS='dd.mm.yyyy'" ];
     history = {
@@ -123,9 +138,93 @@
     enable = true;
     userName = username;
     userEmail = useremail;
+    url = {
+      "git@github.com:" = {
+        insteadOf = [
+          "http://github.com/"
+          "https://github.com/"
+        ];
+      };
+      "git@gitlab.com:" = {
+        insteadOf = [
+          "http://gitlab.com/"
+          "https://gitlab.com/"
+        ];
+      };
+    };
+    gpg.format = "ssh";
+    gpg."ssh" = {
+      program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
+    };
+    commit = {
+      gpgsign = true;
+    };
+    user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINybc/UadZaU/OFQ6dVS2l7+5GG4wzY6hfz098SynMbd";
   };
   programs.vscode = {
     enable = true;
+    profiles.default.extensions = with pkgs.vscode-extensions; [
+      asciidoctor.asciidoctor-vscode
+      asvetliakov.vscode-neovim
+      eamodio.gitlens
+      editorconfig.editorconfig
+      jnoortheen.nix-ide
+      kamadorueda.alejandra
+      mads-hartmann.bash-ide-vscode
+      redhat.vscode-yaml
+    ];
+    userSettings = {
+      "C_Cpp.intelliSenseEngine" = "disabled";
+      "[dockerfile]" = {
+        "editor.defaultFormatter" = "ms-azuretools.vscode-docker";
+      };
+      "[nix]" = {
+        "editor.defaultFormatter" = "jnoortheen.nix-ide";
+      };
+      "[shellscript]" = {
+        "editor.formatOnSave" = false;
+        "files.eol" = "\n";
+      };
+      "chat.commandCenter.enabled" = false;
+      "diffEditor.ignoreTrimWhitespace" = false;
+      "editor.cursorBlinking" = "smooth";
+      "editor.cursorSmoothCaretAnimation" = "explicit";
+      #"editor.formatOnType" = true;
+      "editor.lineNumbers" = "relative";
+      "editor.linkedEditing" = true;
+      "editor.minimap.renderCharacters" = false;
+      "editor.renderWhitespace" = "trailing";
+      "extensions.autoCheckUpdates" = false;
+      "files.insertFinalNewline" = true;
+      "files.simpleDialog.enable" = true;
+      "files.trimFinalNewlines" = true;
+      "git.autofetch" = true;
+      "liveshare.allowGuestDebugControl" = true;
+      "liveshare.connectionMode" = "direct";
+      "nix.enableLanguageServer" = true;
+      "nix.formatterPath" = "nixfmt";
+      "nix.serverPath" = "nixd";
+      "nix.serverSettings" = {
+        nixd = {
+          formatting = {
+            command = [ "nixfmt" ];
+          };
+          options = {
+            home-manager = {
+              expr = "(import <home-manager/modules> { configuration = { home.username = \"root\"; home.stateVersion = \"24.05\"; home.homeDirectory = \"/root\"; }; pkgs = import <nixpkgs> {}; }).options";
+            };
+          };
+        };
+      };
+      "terminal.integrated.enableVisualBell" = true;
+      "terminal.integrated.scrollback" = 5000;
+      "terminal.integrated.fontFamily" = "MesloLGS Nerd Font";
+      "update.mode" = "none";
+      "window.title" =
+        "\${appName}\${separator}\${dirty}\${activeEditorShort}\${separator}\${rootName}\${separator}\${profileName}";
+      "window.titleBarStyle" = "custom";
+      "workbench.editorLargeFileConfirmation" = 10;
+    };
   };
   programs.home-manager.enable = true;
   home = {
