@@ -127,12 +127,6 @@
   programs.vscode = {
     enable = true;
   };
-  #programs.protonvpn-gui = {
-  #  enable = true;
-  #};
-  #programs.protonvpn-cli = {
-  #  enable = true;
-  #};
   programs.home-manager.enable = true;
   home = {
     sessionVariables = {

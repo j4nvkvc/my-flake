@@ -40,31 +40,8 @@
       cleanup = "zap";
     };
 
-    masApps = {
-      # Xcode = 497799835;
-      #"AdGuard" = 1440147259;
-      #"1Password for Safari" = 1569813296;
-    };
-
-    taps = [
-      #"homebrew/services"
-      #"1password/tap"
-      #"homebrew/1password-cli"
-    ];
-
-    # `brew install`
-    # TODO Feel free to add your favorite apps here.
-    brews = [
-      #"wget" # download tool
-      #"curl" # no not install curl via nixpkgs, it's not working well on macOS!
-    ];
-
-    # `brew install --cask`
-    # TODO Feel free to add your favorite apps here.
     casks = [
-      #"1password"
       "adguard"
-      #"visual-studio-code"
       "protonvpn"
       "proton-drive"
       "obsidian"
@@ -72,8 +49,7 @@
       "discord"
 
       # Development
-      "wireshark" # network analyzer
-      #"1password-cli"
+      "wireshark"
     ];
   };
 
@@ -105,6 +81,7 @@
     _1password-gui = {
       enable = true;
     };
+    # maybe useful : launchctl disable user/$(id -u)/com.openssh.ssh-agent
     ssh = {
       extraConfig = ''
         Host *
@@ -292,7 +269,6 @@
     };
   };
 
-  # Set your time zone.
   time.timeZone = "Europe/Paris";
 
   users.users."${username}" = {
