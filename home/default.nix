@@ -13,8 +13,6 @@
     };
     initContent = ''
       export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-    '';
-    initExtra = ''
       bindkey -e
       bindkey '^[[A' up-line-or-search
       bindkey '^[[B' down-line-or-search
@@ -136,30 +134,37 @@
   };
   programs.git = {
     enable = true;
-    userName = username;
-    userEmail = useremail;
-    url = {
-      "git@github.com:" = {
-        insteadOf = [
-          "http://github.com/"
-          "https://github.com/"
-        ];
+    signing = {
+      format = "ssh";
+      signByDefault = true;
+      key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINybc/UadZaU/OFQ6dVS2l7+5GG4wzY6hfz098SynMbd";
+    };
+
+    settings = {
+      user.email = username;
+      user.name = useremail;
+      url = {
+        "git@github.com:" = {
+          insteadOf = [
+            "http://github.com/"
+            "https://github.com/"
+          ];
+        };
+        "git@gitlab.com:" = {
+          insteadOf = [
+            "http://gitlab.com/"
+            "https://gitlab.com/"
+          ];
+        };
       };
-      "git@gitlab.com:" = {
-        insteadOf = [
-          "http://gitlab.com/"
-          "https://gitlab.com/"
-        ];
+      gpg.format = "ssh";
+      commit.gpgsign = true;
+      tag.gpgsign = true;
+
+      gpg."ssh" = {
+        program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
       };
     };
-    gpg.format = "ssh";
-    gpg."ssh" = {
-      program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign";
-    };
-    commit = {
-      gpgsign = true;
-    };
-    user.signingkey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINybc/UadZaU/OFQ6dVS2l7+5GG4wzY6hfz098SynMbd";
   };
   programs.vscode = {
     enable = true;
@@ -173,7 +178,7 @@
       mads-hartmann.bash-ide-vscode
       redhat.vscode-yaml
     ];
-    userSettings = {
+    profiles.default.userSettings = {
       "C_Cpp.intelliSenseEngine" = "disabled";
       "[dockerfile]" = {
         "editor.defaultFormatter" = "ms-azuretools.vscode-docker";
@@ -207,7 +212,7 @@
       "nix.serverSettings" = {
         nixd = {
           formatting = {
-            command = [ "nixfmt" ];
+            command = ["nixfmt"];
           };
           options = {
             home-manager = {
@@ -220,8 +225,7 @@
       "terminal.integrated.scrollback" = 5000;
       "terminal.integrated.fontFamily" = "MesloLGS Nerd Font";
       "update.mode" = "none";
-      "window.title" =
-        "\${appName}\${separator}\${dirty}\${activeEditorShort}\${separator}\${rootName}\${separator}\${profileName}";
+      "window.title" = "\${appName}\${separator}\${dirty}\${activeEditorShort}\${separator}\${rootName}\${separator}\${profileName}";
       "window.titleBarStyle" = "custom";
       "workbench.editorLargeFileConfirmation" = 10;
     };
